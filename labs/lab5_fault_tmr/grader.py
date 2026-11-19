@@ -16,9 +16,10 @@ def band(e, v, what):
 
 
 def table(m):
-    if id(m) not in _TABLE:
-        _TABLE[id(m)] = m.fault_table(300, seed(7))
-    return _TABLE[id(m)]
+    # keep a reference to the module: a bare id() can be reused by the next graded module after GC
+    if id(m) not in _TABLE or _TABLE[id(m)][0] is not m:
+        _TABLE[id(m)] = (m, m.fault_table(300, seed(7)))
+    return _TABLE[id(m)][1]
 
 
 def t1(m):

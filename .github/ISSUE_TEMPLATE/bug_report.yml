@@ -1,0 +1,63 @@
+name: Bug report
+description: Report something that is not working
+labels:
+- bug
+body:
+- type: textarea
+  id: what
+  attributes:
+    label: What happened?
+    description: Describe the bug and what you expected instead.
+  validations:
+    required: true
+- type: textarea
+  id: steps
+  attributes:
+    label: Steps to reproduce
+    description: Numbered steps, as exact as possible.
+  validations:
+    required: true
+- type: dropdown
+  id: lab
+  attributes:
+    label: Lab
+    options:
+    - 1 LFSR hop generator
+    - 2 PRNG graveyard
+    - 3 CPA of SipHash
+    - 4 Masking
+    - 5 Fault injection / TMR
+    - 6 Trojan / PUF
+    - Trace explorer (HTML)
+    - Grader / tooling
+  validations:
+    required: true
+- type: input
+  id: env
+  attributes:
+    label: Operating system and Python version
+    description: e.g. Ubuntu 24.04, Python 3.12.3 (`python3 --version`).
+  validations:
+    required: true
+- type: input
+  id: tools
+  attributes:
+    label: Other tool versions
+    description: Browser + Playwright version for the explorer, or RTL simulator versions if relevant.
+  validations:
+    required: false
+- type: input
+  id: commit
+  attributes:
+    label: Commit
+    description: Output of `git rev-parse --short HEAD`.
+  validations:
+    required: true
+- type: textarea
+  id: logs
+  attributes:
+    label: Logs or output
+    description: Paste relevant output. It will be formatted as code. Remove personal data first.
+    render: shell
+  validations:
+    required: false

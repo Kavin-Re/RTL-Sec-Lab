@@ -1,0 +1,4 @@
+# The labs, graders and kit check need NumPy only.
+numpy>=1.24
+# Optional, for tests/test_explorer.py (it skips itself otherwise):
+# playwright>=1.44   then: python -m playwright install chromium

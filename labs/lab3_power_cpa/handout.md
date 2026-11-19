@@ -6,6 +6,8 @@ Own design, simulation only. The traces come from an **assumed** leakage model (
 
 **Target.** SipHash-2-4 on an 8-byte counter message m, first SipRound. Stage 1: v3 = k1 ^ C3 ^ m leaks HW of each byte of v3. Stage 2: s = (k0 ^ C2) + v3 leaks HW of each byte of s; with k1 known, v3 is known, and byte b of s depends on k0 byte b, v3 byte b and the carry from bytes 0..b-1. A trace has 16 samples (8 + 8).
 
+**Assumption to keep in mind.** The grader draws every message m uniformly at random from all 64-bit values, so every message byte varies. A real hop engine hashes a slot counter that counts up: over a few hundred hops only its lowest byte changes, and this first-round attack then recovers only the key bytes that line up with changing counter bytes (1 of 8 at 300 consecutive slots). Full-key recovery here is a property of the random-message setting.
+
 **Tasks** (`python labs/lab3_power_cpa/grader.py labs/lab3_power_cpa/starter.py`)
 T1 `hw8`. T2 `corr_cols` (Pearson per column, constant column gives 0). T3 `scores_stage1` + `recover_k1`. T4 `scores_stage2` + `recover_k0` (use the given `carry_in`). T5 `success_rate(sigma, N)` = fraction of full 128-bit keys recovered. T6 `min_traces(sigma)`. T7 (stretch) with Hamming-distance leakage, find the two best guesses for k0 byte 0.
 

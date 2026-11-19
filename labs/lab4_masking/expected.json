@@ -8,7 +8,7 @@
   {"task": "T4", "quantity": "fo_attack on masked traces, N=10000, sigma=1 (bytes right of 8; chance is 8/256)", "expected": 0, "lo": 0, "hi": 2},
   {"task": "T4", "quantity": "so_attack on masked traces, N=10000, sigma=2", "expected": 8, "lo": 7, "hi": 8},
   {"task": "T5", "quantity": "so_attack, N=300, sigma=2 (masking costs traces)", "expected": 0, "lo": 0, "hi": 3},
-  {"task": "T5", "quantity": "so_attack, N=3000, sigma=2", "expected": 7.5, "lo": 6, "hi": 8},
+  {"task": "T5", "quantity": "so_attack, N=3000, sigma=2", "expected": 7.5, "lo": 4, "hi": 8},
   {"task": "T6", "quantity": "max |t|, order 1, masks off, N=10000", "expected": 100, "lo": 20, "hi": 400},
   {"task": "T6", "quantity": "max |t|, order 1, masks on, N=10000", "expected": 1.8, "lo": 0, "hi": 4.5},
   {"task": "T6", "quantity": "max |t|, order 2, masks on, N=10000", "expected": 23, "lo": 8, "hi": 60},

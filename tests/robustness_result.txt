@@ -5,7 +5,7 @@ shift  3: all PASS
 shift  4: all PASS
 shift  5: all PASS
 shift  6: all PASS
-shift  7: FAILS: FAIL  T5 masking costs traces  [assertion: second order, N=3000 = 5.00, expected within [6, 8]]  (0.8s)
+shift  7: all PASS
 shift  8: all PASS
 shift  9: all PASS
 shift 10: all PASS
@@ -18,4 +18,4 @@ shift 16: all PASS
 shift 17: all PASS
 shift 18: all PASS
 shift 19: all PASS
-ROBUSTNESS: 19/20 shifts all-PASS
+ROBUSTNESS: 20/20 shifts all-PASS

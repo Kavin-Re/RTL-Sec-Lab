@@ -46,3 +46,12 @@ dist/
 *.wlf
 *.fsdb
 *.vpd
+
+# --- RTL-Sec-Lab ---
+# student hand-out export (python -m rtlseclab.tools.make_student_kit)
+dist/
+# delivery bundles duplicate tracked files
+.delivery/
+*.tgz
+.ruff_cache/
+.mypy_cache/

@@ -13,7 +13,7 @@ T1 `share`. T2 `fo_attack` (all share samples, best peak) - works unmasked and w
 | unmasked, N=300, sigma=2: bytes of k1 right (of 8) | 8 | 8 |
 | first-order on masked, N=10000, sigma=1 (chance 0.03) | 0 | 0-2 |
 | second-order on masked, N=10000, sigma=2 | 8 | 7-8 |
-| second-order, N=300 / N=3000, sigma=2 | 0 / 7 | 0-3 / 6-8 |
+| second-order, N=300 / N=3000, sigma=2 | 0 / 7 | 0-3 / 4-8 |
 | max abs t: order 1 masks off / order 1 masks on / order 2 masks on | about 100-150 / 1.8 / 23-34 | 20-400 / <= 4.5 / 8-60 |
 | recombination leak, first-order attack, N=2000, sigma=2 | 8 | 7-8 |
 

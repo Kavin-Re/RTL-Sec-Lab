@@ -7,7 +7,7 @@ A self-contained kit on the hardware security of a small keyed hop/PRF engine (o
 - Copy the kit folder, `cd` into it, run `python -m rtlseclab.check`. Expected last line: `KIT CHECK: 39/39 solution tasks PASS across 6 labs` (about 30-60 s on a laptop).
 - Students work in `labs/labN_*/starter.py`; grade with `python labs/labN_*/grader.py labs/labN_*/starter.py`. Each grader prints PASS/FAIL per task and exits non-zero on any FAIL. Graders are deterministic (fixed seeds); `RTLSECLAB_SEED_SHIFT=k` shifts all seeds if you suspect a student hard-coded outputs.
 - Open `explorer/trace_explorer.html` in any browser (single file, offline) for Labs 3-4.
-- Hand out each `handout.md`; keep `solution.py` and `answer_key.md` back.
+- Hand out each `handout.md`; keep `solution.py` and `answer_key.md` back. `python -m rtlseclab.tools.make_student_kit` writes a copy of the kit without them to `dist/rtl-sec-lab-student/`. The repository itself contains the solutions, so point students at that export, not at the repository.
 
 ## Timing (180 minutes)
 | Time | Block | Notes |
@@ -34,6 +34,7 @@ If time runs short drop the stretch tasks (marked "(stretch)" in the grader outp
 
 ## What the kit does not do (say this out loud)
 - Leakage is an assumed Hamming-weight/Hamming-distance model with Gaussian noise; no alignment, jitter, or real measurement. Masking is modelled at the share-byte level only (no glitches, coupling or routing).
+- Labs 3 and 4 attack traces taken with uniformly random 64-bit messages. The engine's real input is a slot counter; with consecutive slots the first-round CPA of Lab 3 recovers only the key bytes aligned with counter bytes that change (1 of 8 bytes of each key half at 300 traces, 2 of 8 at 70,000; see `docs/known_issues.md`). The labs teach the method, not an end-to-end break of a counter-mode engine.
 - Faults are abstract bit flips in a receiver model; TX-side faults, datapath faults, voter faults and common-mode faults are outside the model except the T6 demonstration.
 - Area numbers are a proxy with assumed cell areas, not synthesis results.
 - Trojan and PUF models are our own abstractions; the kit proves nothing about any real chip.
