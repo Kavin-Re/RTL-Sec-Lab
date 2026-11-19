@@ -1,0 +1,16 @@
+{"lab": 4, "title": "Masking and its limits (2-share boolean masking, simulated)",
+ "note": "Fixed seeds in grader.py. Bands are wider than the spread over RTLSECLAB_SEED_SHIFT 0..19 (tests/test_robustness.py).",
+ "items": [
+  {"task": "T1", "quantity": "share(): x0^x1 == x, x1 looks uniform (mean byte HW of x1 over 20000 bytes)", "expected": 4.0, "lo": 3.9, "hi": 4.1},
+  {"task": "T2", "quantity": "fo_attack on unmasked traces, N=300, sigma=2 (bytes right of 8)", "expected": 8, "lo": 8, "hi": 8},
+  {"task": "T2", "quantity": "fo_attack with masks switched off (control), N=2000, sigma=2", "expected": 8, "lo": 8, "hi": 8},
+  {"task": "T3", "quantity": "so_combine equals the centred product", "expected": "exact", "lo": null, "hi": null},
+  {"task": "T4", "quantity": "fo_attack on masked traces, N=10000, sigma=1 (bytes right of 8; chance is 8/256)", "expected": 0, "lo": 0, "hi": 2},
+  {"task": "T4", "quantity": "so_attack on masked traces, N=10000, sigma=2", "expected": 8, "lo": 7, "hi": 8},
+  {"task": "T5", "quantity": "so_attack, N=300, sigma=2 (masking costs traces)", "expected": 0, "lo": 0, "hi": 3},
+  {"task": "T5", "quantity": "so_attack, N=3000, sigma=2", "expected": 7.5, "lo": 6, "hi": 8},
+  {"task": "T6", "quantity": "max |t|, order 1, masks off, N=10000", "expected": 100, "lo": 20, "hi": 400},
+  {"task": "T6", "quantity": "max |t|, order 1, masks on, N=10000", "expected": 1.8, "lo": 0, "hi": 4.5},
+  {"task": "T6", "quantity": "max |t|, order 2, masks on, N=10000", "expected": 23, "lo": 8, "hi": 60},
+  {"task": "T7", "quantity": "fo_attack when a register leaks HW(share0^share1), N=2000, sigma=2", "expected": 8, "lo": 7, "hi": 8}
+ ]}

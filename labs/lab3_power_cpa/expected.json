@@ -1,0 +1,15 @@
+{"lab": 3, "title": "Correlation power analysis of the SipHash hop engine (simulated HW leakage)",
+ "note": "Fixed seeds in grader.py. Bands are wider than the spread over RTLSECLAB_SEED_SHIFT 0..19 (tests/test_robustness.py).",
+ "items": [
+  {"task": "T1", "quantity": "hw8 equals popcount for all 256 byte values", "expected": "exact", "lo": null, "hi": null},
+  {"task": "T2", "quantity": "corr_cols equals numpy corrcoef (max abs diff)", "expected": "<1e-9", "lo": 0, "hi": 1e-9},
+  {"task": "T3", "quantity": "recover_k1 on 5 random keys, N=300, sigma=1", "expected": "5/5 exact", "lo": 5, "hi": 5},
+  {"task": "T3", "quantity": "peak correlation of the right guess, sigma=2, N=300 (key byte 0)", "expected": 0.54, "lo": 0.42, "hi": 0.66},
+  {"task": "T4", "quantity": "recover_k0 given the true k1, 5 keys, N=300, sigma=1", "expected": "5/5 exact", "lo": 5, "hi": 5},
+  {"task": "T5", "quantity": "full-key success rate, sigma=2, N=50", "expected": 0.0, "lo": 0.0, "hi": 0.25},
+  {"task": "T5", "quantity": "full-key success rate, sigma=2, N=200", "expected": 1.0, "lo": 0.9, "hi": 1.0},
+  {"task": "T5", "quantity": "full-key success rate, sigma=4, N=800", "expected": 1.0, "lo": 0.9, "hi": 1.0},
+  {"task": "T6", "quantity": "min_traces(sigma=2) (grid 25..1600)", "expected": 200, "lo": 100, "hi": 400},
+  {"task": "T6", "quantity": "min_traces(4) / min_traces(2): noise power x4 -> about x4 traces", "expected": 4, "lo": 2, "hi": 8},
+  {"task": "T7", "quantity": "HD-model top-2 guesses for k0 byte 0 are {true, true^0x80} on 5 keys", "expected": "5/5", "lo": 5, "hi": 5}
+ ]}

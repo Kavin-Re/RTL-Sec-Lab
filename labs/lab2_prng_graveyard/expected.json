@@ -1,0 +1,10 @@
+{"lab": 2, "title": "The PRNG graveyard",
+ "note": "Hops-to-break figures are for 'channel numbers only' observations (hop = (x>>8) mod 13 for the LCG, low 4 bits for xorshift32).",
+ "items": [
+  {"task": "T1", "quantity": "hops until a single LCG-24 state remains (each trial; 4 seeds)", "expected": "6..9, mean about 7.4", "lo": 5, "hi": 10},
+  {"task": "T2", "quantity": "untemper(temper(y)) == y for 2000 random 32-bit y; clone predicts 2000 further outputs", "expected": "exact", "lo": null, "hi": null},
+  {"task": "T3", "quantity": "observed xorshift32 hops (4 bits each) until the GF(2) system has a unique solution", "expected": 9, "lo": 9, "hi": 9},
+  {"task": "T4", "quantity": "order-3 context predictor accuracy on the LFSR16 stream (20000 hops, chance 0.077)", "expected": 0.236, "lo": 0.20, "hi": 0.27},
+  {"task": "T4", "quantity": "same predictor on a SipHash stream and on an HMAC-SHA256 stream (20000 hops each)", "expected": 0.072, "lo": 0.05, "hi": 0.10},
+  {"task": "T5", "quantity": "graveyard_table: LCG24 / xorshift32 / MT19937 hops needed", "expected": "about 7.4 / 9 / 624", "lo": 5.5, "hi": 9.5}
+ ]}

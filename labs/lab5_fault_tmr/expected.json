@@ -1,0 +1,22 @@
+{"lab": 5, "title": "Fault injection and the cost of TMR (abstract fault model, GE area proxy)",
+ "note": "Fixed seeds in grader.py. Area numbers are a proxy from ge_model.py (ASSUMED cell areas), not synthesis. Bands cover the spread over RTLSECLAB_SEED_SHIFT 0..19.",
+ "items": [
+  {"task": "T1", "quantity": "majority/parity exact on all 3-bit and random inputs", "expected": "exact", "lo": null, "hi": null},
+  {"task": "T2", "quantity": "exact P(TMR fails | 2 flips), 32-bit counter", "expected": 0.02105, "lo": 0.0210, "hi": 0.0211},
+  {"task": "T2", "quantity": "exact P(TMR fails | 2 flips), 128-bit key", "expected": 0.00522, "lo": 0.0052, "hi": 0.0053},
+  {"task": "T2", "quantity": "Monte Carlo (32-bit, 2 flips, 40000 trials) vs exact", "expected": 0.0211, "lo": 0.0165, "hi": 0.0260},
+  {"task": "T3", "quantity": "TMR_state overhead % of baseline GE", "expected": 53.4, "lo": 52.4, "hi": 54.4},
+  {"task": "T3", "quantity": "DMR_parity_state overhead %", "expected": 57.3, "lo": 56.3, "hi": 58.3},
+  {"task": "T3", "quantity": "TMR_full_engine overhead %", "expected": 200.2, "lo": 199.2, "hi": 201.2},
+  {"task": "T3", "quantity": "lockstep_full_engine overhead %", "expected": 100.2, "lo": 99.2, "hi": 101.2},
+  {"task": "T4", "quantity": "unprotected (none) p_desync after 1 counter flip", "expected": 1.0, "lo": 1.0, "hi": 1.0},
+  {"task": "T4", "quantity": "none_nowd key 1 flip: p_unrecovered (no watchdog => never recovers)", "expected": 1.0, "lo": 0.95, "hi": 1.0},
+  {"task": "T4", "quantity": "none (watchdog) key 1 flip: mean recovery slots", "expected": 44, "lo": 30, "hi": 60},
+  {"task": "T4", "quantity": "tmr single faults (ctr,key,fsm,out): p_desync", "expected": 0.0, "lo": 0.0, "hi": 0.0},
+  {"task": "T4", "quantity": "tmr ctr 2 flips: p_desync (exact 0.021 per flip pair)", "expected": 0.03, "lo": 0.0, "hi": 0.10},
+  {"task": "T4", "quantity": "dcp ctr 2 flips: p_desync (parity cannot fix 2 flips in a copy)", "expected": 0.73, "lo": 0.55, "hi": 0.90},
+  {"task": "T4", "quantity": "dcp fsm 1: p_desync", "expected": 0.5, "lo": 0.35, "hi": 0.65},
+  {"task": "T5", "quantity": "cheapest scheme with worst single-fault p_desync <= 0.05", "expected": "tmr", "lo": null, "hi": null},
+  {"task": "T5", "quantity": "same with max_pdesync = 0.6 (dcp fails the 'out' case: p_desync 1.0)", "expected": "tmr", "lo": null, "hi": null},
+  {"task": "T6", "quantity": "common-mode flip survives the vote", "expected": "vote returns the flipped value", "lo": null, "hi": null}
+ ]}

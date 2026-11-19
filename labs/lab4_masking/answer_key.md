@@ -1,0 +1,7 @@
+# Lab 4 answer key
+
+1. Share 1 = r is uniform, share 0 = x ^ r is uniform for any x, so each sample alone is independent of x. Jointly, E[(HW(x^r)-4)(HW(r)-4)] = -(HW(x)-4)/2 (taking expectations over r), so the centred product carries HW(x) with a negative sign. That is why `so_attack` negates the scores. Noise appears in both factors, so the signal is much smaller than in the first-order case (r about 0.13 at N=3000, sigma=2 in the explorer) and N grows a lot (N=300 fails, N=3000 mostly works, N=10000 works).
+2. Report that no first-order leakage was detected with N traces and sigma = ..., that second-order leakage is detected (|t| far above 4.5) and a second-order attack works with about 3000-10000 simulated traces, so the design is first-order secure only; whether that is enough depends on the attacker's trace budget and noise. State the model's limits (HW leakage, aligned traces, no glitches).
+3. Glitches / early propagation in the combinational adder (a share-recombining intermediate leaks within one cycle), and coupling or routing between share wires (the shares leak in a shared sample); also register transitions (HD between consecutive values) and unfresh/biased randomness. The stretch task shows the simplest case: one register that holds both shares' difference gives a first-order attack at N=2000.
+
+Common mistakes: forgetting to centre the samples before the product; not negating the second-order scores; running the first-order attack on one share sample only; reading "masking on, order-1 t-test passes" as "secure".

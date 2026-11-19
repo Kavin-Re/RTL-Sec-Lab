@@ -1,0 +1,7 @@
+# Lab 2 answer key
+
+1. Statistical tests ask whether output looks random to an observer who does not know the algorithm's structure; an adversary who knows the algorithm and the state-update rule only needs the state. MT19937 is a linear generator over GF(2) with a 19937-bit state that is exposed word for word through its output, so 624 outputs reveal it. Unpredictability against a knowing attacker needs a keyed primitive (PRF), not good statistics.
+2. State is 32 bits, each hop gives 4 independent linear equations, so 32/4 = 8 hops are the minimum and the grader sees 9 for a unique solution (an extra hop is needed because some equations are dependent). The solution is exact linear algebra, not search.
+3. Chance is 1/13 = 0.077 and the standard error with 20000 hops is sqrt(0.077*0.923/20000) = 0.0019, so 0.10 is about 12 standard errors above chance: real structure, and the generator is predictable to some degree (the grader's band for keyed streams, 0.05-0.10, only has to absorb the seed-to-seed spread). The converse is weaker: a score at chance only shows that this order-3 predictor finds nothing; it does not prove security (SipHash and HMAC sit at chance because they are keyed, but a nonlinear generator with a hidden weakness could also sit at chance against this predictor).
+
+Common mistakes: forgetting that the LCG filter steps first; wrong inverse order in `untemper`; Python ints overflowing numpy uint32/uint64; treating predictor accuracy 0.07 as "proof of security".

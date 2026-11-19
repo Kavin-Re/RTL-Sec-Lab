@@ -1,0 +1,22 @@
+{"lab": 6, "title": "Trojan detection from the hop sequence; RO-PUF and fuzzy extractor (statistical models)",
+ "note": "Fixed seeds in grader.py. Bands are wider than the spread over RTLSECLAB_SEED_SHIFT 0..19 (tests/test_robustness.py).",
+ "items": [
+  {"task": "T1", "quantity": "chi2_stat equals the textbook formula; uniform counts give 0", "expected": "exact", "lo": null, "hi": null},
+  {"task": "T2", "quantity": "alarm_threshold(1e-3), 12 degrees of freedom", "expected": 32.91, "lo": 32.8, "hi": 33.0},
+  {"task": "T2", "quantity": "alarm_threshold(0.05)", "expected": 21.03, "lo": 20.95, "hi": 21.1},
+  {"task": "T3", "quantity": "clean false-alarm rate at alpha=1e-2 (W=500, 3000 windows)", "expected": 0.0100, "lo": 0.005, "hi": 0.017},
+  {"task": "T4", "quantity": "per-window detection, bias beta=26/256 (10 %), W=2000, alpha=1e-3", "expected": 1.0, "lo": 0.95, "hi": 1.0},
+  {"task": "T4", "quantity": "per-window detection, beta=13/256 (5 %)", "expected": 0.99, "lo": 0.9, "hi": 1.0},
+  {"task": "T4", "quantity": "per-window detection, beta=6/256 (2.3 %)", "expected": 0.2, "lo": 0.05, "hi": 0.45},
+  {"task": "T5", "quantity": "cusum_first on a hand-made sequence", "expected": "exact", "lo": null, "hi": null},
+  {"task": "T5", "quantity": "calibrated CUSUM threshold h (k=15, W=500, 5 % false-alarm runs)", "expected": 40, "lo": 30, "hi": 60},
+  {"task": "T5", "quantity": "mean delay in windows, CUSUM (beta=8/256, W=500)", "expected": 13, "lo": 5, "hi": 25},
+  {"task": "T5", "quantity": "single-window delay / CUSUM delay", "expected": 1.7, "lo": 1.15, "hi": 6.0},
+  {"task": "T6", "quantity": "uniqueness, far pairing with layout gradient", "expected": 0.244, "lo": 0.15, "hi": 0.35},
+  {"task": "T6", "quantity": "uniqueness, neighbour pairing / far pairing after plane removal", "expected": 0.50, "lo": 0.47, "hi": 0.53},
+  {"task": "T6", "quantity": "BER nominal, far_planefit (theory arctan(0.05)/pi = 0.0159)", "expected": 0.0165, "lo": 0.010, "hi": 0.025},
+  {"task": "T6", "quantity": "BER at +60 C, far_planefit", "expected": 0.051, "lo": 0.035, "hi": 0.07},
+  {"task": "T7", "quantity": "raw 128 PUF bits as key: regeneration rate at +60 C", "expected": 0.0, "lo": 0.0, "hi": 0.05},
+  {"task": "T7", "quantity": "BCH only: regeneration rate at +60 C", "expected": 0.53, "lo": 0.3, "hi": 0.8},
+  {"task": "T7", "quantity": "repetition x3 + BCH: rate at +60 C, response bits used", "expected": "1.0, 855", "lo": 0.95, "hi": 1.0}
+ ]}

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RTL-Sec-Lab Trace Explorer</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d2327;--mut:#5d6870;--card:#fff;--line:#d9dde0;--a:#1b6ca8;--b:#c4571a;--ok:#2a7d46;--bad:#b3261e}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181b;--fg:#e6e9eb;--mut:#9aa5ac;--card:#1c2226;--line:#33404a;--a:#6fb3e8;--b:#f0955a;--ok:#5cc481;--bad:#ff8a80}}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,sans-serif}
+main{max-width:980px;margin:0 auto;padding:16px}
+h1{font-size:1.25rem;margin:.2em 0}p.s{color:var(--mut);margin:.2em 0 1em}
+.ctl{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.ctl label{display:flex;flex-direction:column;font-size:.8rem;color:var(--mut);gap:2px}.ctl input[type=range]{width:170px}.ctl output{color:var(--fg);font-weight:600}
+select{font:inherit;padding:2px 4px;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:4px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}@media(max-width:720px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px}.card h2{font-size:.95rem;margin:.1em 0 .3em}
+canvas{width:100%;height:230px;display:block}.full{grid-column:1/-1}
+#res{font-size:.95rem;margin-top:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card)}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}small{color:var(--mut)}
+</style></head><body><main>
+<h1>Trace explorer: simulated power traces and CPA peaks</h1>
+<p class="s">Simulation only. Leakage model is ASSUMED: each sample = Hamming weight of one byte + Gaussian noise. Target: stage 1 of the first SipRound, v3 = k1 ^ C3 ^ m. No device was measured.</p>
+<div class="ctl">
+<label>Traces N <output id="oN"></output><input id="N" type="range" min="10" max="3000" value="300"></label>
+<label>Noise sigma <output id="oS"></output><input id="S" type="range" min="0.5" max="6" step="0.5" value="2"></label>
+<label>Key byte <select id="B"></select></label>
+<label>Target <select id="mode"><option value="u">unmasked</option><option value="f">masked, first-order attack</option><option value="s">masked, second-order attack</option></select></label>
+</div>
+<div id="res" role="status"></div>
+<div class="grid">
+<div class="card"><h2>Individual traces (8 byte-samples each)</h2><canvas id="c1"></canvas></div>
+<div class="card"><h2>CPA: correlation for each of the 256 key guesses</h2><canvas id="c2"></canvas></div>
+<div class="card full"><h2>Correlation of the true guess and the best wrong guess as traces accumulate</h2><canvas id="c3"></canvas></div>
+</div>
+<p class="s"><small>Signs: guesses that differ from the true byte in only a few bits show large ghost correlations, and the bitwise complement of the true byte correlates with about -r, so rank by the signed value (second order: by the negated value). Peak ratio = best / second-best |r|.</small></p>
+</main>
+<script>
+const D=/*__DATA__*/null;
+const HW=new Uint8Array(256);for(let i=1;i<256;i++)HW[i]=HW[i>>1]+(i&1);
+const $=id=>document.getElementById(id);
+for(let b=0;b<8;b++){const o=document.createElement('option');o.value=b;o.textContent='byte '+b+' (true 0x'+D.k1[b].toString(16).padStart(2,'0')+')';$('B').appendChild(o)}
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function samples(i,mode,sigma){ // returns {a:[8],c:[8]} sample values for trace i (a: share0/unmasked, c: share1)
+  const a=new Float64Array(8),c=new Float64Array(8);
+  for(let b=0;b<8;b++){const m=D.m[i*8+b],v=m^D.k1[b]^D.c3[b],r=D.r[i*8+b];
+    if(mode==='u'){a[b]=HW[v]+sigma*D.z[(i*3+0)*8+b]}
+    else{a[b]=HW[v^r]+sigma*D.z[(i*3+1)*8+b];c[b]=HW[r]+sigma*D.z[(i*3+2)*8+b]}}
+  return {a,c}}
+function cpa(N,mode,sigma,byte){
+  // trace values for the attacked byte
+  const x=new Float64Array(N);let mu=0,mc=0;const sa=new Float64Array(N),sc=new Float64Array(N);
+  for(let i=0;i<N;i++){const m=D.m[i*8+byte],v=m^D.k1[byte]^D.c3[byte],r=D.r[i*8+byte];
+    if(mode==='u')sa[i]=HW[v]+sigma*D.z[(i*3)*8+byte];
+    else{sa[i]=HW[v^r]+sigma*D.z[(i*3+1)*8+byte];sc[i]=HW[r]+sigma*D.z[(i*3+2)*8+byte]}}
+  if(mode==='s'){let ma=0,mb=0;for(let i=0;i<N;i++){ma+=sa[i];mb+=sc[i]}ma/=N;mb/=N;for(let i=0;i<N;i++)x[i]=(sa[i]-ma)*(sc[i]-mb)}
+  else for(let i=0;i<N;i++)x[i]=sa[i];
+  let ml=0;for(let i=0;i<N;i++)ml+=x[i];ml/=N;let vl=0;for(let i=0;i<N;i++)vl+=(x[i]-ml)**2;
+  const sc2=new Float64Array(256);
+  for(let g=0;g<256;g++){let sh=0,shh=0,shl=0;
+    for(let i=0;i<N;i++){const h=HW[D.m[i*8+byte]^g^D.c3[byte]];sh+=h;shh+=h*h;shl+=h*x[i]}
+    const vh=shh-sh*sh/N,cv=shl-sh*ml;const den=Math.sqrt(vh*vl);sc2[g]=den>1e-9?cv/den:0}
+  return mode==='s'?sc2.map(v=>-v):sc2}
+function fit(cv){const r=devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;cv.width=w*r;cv.height=h*r;const g=cv.getContext('2d');g.setTransform(r,0,0,r,0,0);g.clearRect(0,0,w,h);return {g,w,h}}
+function axes(g,w,h,l,r,t,b,ylab,ymin,ymax){g.strokeStyle=css('--line');g.fillStyle=css('--mut');g.font='11px system-ui';g.lineWidth=1;g.beginPath();g.moveTo(l,t);g.lineTo(l,h-b);g.lineTo(w-r,h-b);g.stroke();
+  for(let k=0;k<=4;k++){const v=ymin+(ymax-ymin)*k/4,y=h-b-(h-b-t)*k/4;g.fillText(v.toFixed(2),2,y+4);g.globalAlpha=.4;g.beginPath();g.moveTo(l,y);g.lineTo(w-r,y);g.stroke();g.globalAlpha=1}}
+function draw(){
+  const N=+$('N').value,sigma=+$('S').value,byte=+$('B').value,mode=$('mode').value;$('oN').textContent=N;$('oS').textContent=sigma;
+  const sc=cpa(N,mode,sigma,byte),tr=D.k1[byte];
+  let best=0,second=-9;const idx=[...sc.keys()].sort((a,b)=>sc[b]-sc[a]);best=idx[0];second=sc[idx[1]];
+  const rank=idx.indexOf(tr)+1;const okk=best===tr;
+  $('res').innerHTML=(okk?'<span class="ok">Key byte recovered</span>':'<span class="bad">Not recovered</span>')+' : best guess 0x'+best.toString(16).padStart(2,'0')+' (r='+sc[best].toFixed(3)+'), true 0x'+tr.toString(16).padStart(2,'0')+' ranks #'+rank+' (r='+sc[tr].toFixed(3)+'), peak ratio '+(sc[best]/Math.max(Math.abs(second),1e-9)).toFixed(2)+'. Unrelated wrong guesses sit near 1/sqrt(N) = '+(1/Math.sqrt(N)).toFixed(3)+'.';
+  // c1: individual traces
+  {const {g,w,h}=fit($('c1'));const l=34,r=8,t=8,b=22;let ymin=-6,ymax=14;axes(g,w,h,l,r,t,b,'',ymin,ymax);
+   const X=i=>l+(w-l-r)*i/7,Y=v=>h-b-(h-b-t)*(v-ymin)/(ymax-ymin);
+   g.fillStyle=css('--mut');for(let i=0;i<8;i++)g.fillText('B'+i,X(i)-6,h-6);
+   const show=mode==='u'?1:2;
+   for(let k=0;k<6;k++){const s=samples(k,mode==='u'?'u':'m',sigma);
+     g.strokeStyle=css('--a');g.globalAlpha=.55;g.beginPath();for(let i=0;i<8;i++)i?g.lineTo(X(i),Y(s.a[i])):g.moveTo(X(i),Y(s.a[i]));g.stroke();
+     if(mode!=='u'){g.strokeStyle=css('--b');g.beginPath();for(let i=0;i<8;i++)i?g.lineTo(X(i),Y(s.c[i])):g.moveTo(X(i),Y(s.c[i]));g.stroke()}}
+   g.globalAlpha=1;g.fillStyle=css('--a');g.fillText(mode==='u'?'blue: 6 traces':'blue: share 0 sample, orange: share 1 sample',l+6,t+12);
+   g.strokeStyle=css('--fg');g.setLineDash([3,3]);g.beginPath();g.moveTo(X(byte),t);g.lineTo(X(byte),h-b);g.stroke();g.setLineDash([])}
+  // c2: correlation bars
+  {const {g,w,h}=fit($('c2'));const l=34,r=8,t=8,b=22;let ext=Math.max(0.1,...Array.from(sc,Math.abs));ext=Math.ceil(ext*10)/10;axes(g,w,h,l,r,t,b,'',-ext,ext);
+   const bw=(w-l-r)/256,Y=v=>h-b-(h-b-t)*(v+ext)/(2*ext);
+   for(let q=0;q<256;q++){g.fillStyle=q===tr?css('--ok'):css('--a');g.globalAlpha=q===tr?1:.7;const y0=Y(0),y1=Y(sc[q]);g.fillRect(l+q*bw,Math.min(y0,y1),Math.max(bw-.3,1),Math.abs(y1-y0)||1)}
+   g.globalAlpha=1;g.fillStyle=css('--mut');g.fillText('guess 0..255 (green = true key byte)',l+6,h-6)}
+  // c3: evolution
+  {const {g,w,h}=fit($('c3'));const l=34,r=8,t=8,b=22;axes(g,w,h,l,r,t,b,'',-0.2,1);const pts=[];const steps=24;
+   const Ns=[];for(let k=1;k<=steps;k++)Ns.push(Math.max(10,Math.round(N*k/steps)));
+   const T=[],W=[];for(const n of Ns){const s=cpa(n,mode,sigma,byte);let bw=-9;for(let q=0;q<256;q++)if(q!==tr&&s[q]>bw)bw=s[q];T.push(s[tr]);W.push(bw)}
+   const X=i=>l+(w-l-r)*i/(steps-1),Y=v=>h-b-(h-b-t)*(v+0.2)/1.2;
+   for(const [arr,col] of [[W,css('--b')],[T,css('--ok')]]){g.strokeStyle=col;g.lineWidth=2;g.beginPath();arr.forEach((v,i)=>i?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v)));g.stroke()}
+   g.lineWidth=1;g.fillStyle=css('--ok');g.fillText('true guess',l+8,t+12);g.fillStyle=css('--b');g.fillText('best wrong guess',l+90,t+12);g.fillStyle=css('--mut');g.fillText('traces 10 .. '+N,l+8,h-6)}
+}
+['N','S','B','mode'].forEach(id=>$(id).addEventListener('input',draw));addEventListener('resize',draw);draw();
+</script></body></html>

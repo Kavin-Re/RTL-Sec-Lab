@@ -1,0 +1,13 @@
+{"lab": 1, "title": "Breaking the 16-bit LFSR hop generator",
+ "note": "Seeds are fixed in grader.py. Bands are wider than the seed-to-seed spread measured with RTLSECLAB_SEED_SHIFT in 0..19 (see tests/test_robustness.py).",
+ "items": [
+  {"task": "T1", "quantity": "lfsr_step equals the reference LFSR on 3000 random states (int and numpy array)", "expected": "exact", "lo": null, "hi": null},
+  {"task": "T2", "quantity": "hop_stream(0xACE1, 10)", "expected": "[2, 9, 11, 12, 6, 4, 8, 10, 0, 8]", "lo": null, "hi": null},
+  {"task": "T3", "quantity": "survivors after one hop from the full state space (channel 0)", "expected": 5041, "lo": 5041, "hi": 5042},
+  {"task": "T4", "quantity": "mean hops until the candidate set is a single state (30 seeds)", "expected": 8.33, "lo": 7.8, "hi": 9.0, "max_hops": 11},
+  {"task": "T5", "quantity": "ratio of survivors between consecutive hops (hops 1..5)", "expected": 4.0, "lo": 3.3, "hi": 4.8},
+  {"task": "T5", "quantity": "survivors after hop 4 versus the independent-observation estimate 65535/13^4 = 2.3", "expected": 78, "lo": 40, "hi": 150},
+  {"task": "T6", "quantity": "mean hops until the LFSR attacker's candidate set empties on a SipHash stream (40 keys)", "expected": 2.6, "lo": 2.0, "hi": 4.0, "max_hops": 8},
+  {"task": "T7", "quantity": "|successors(h)| for every channel h", "expected": 4, "lo": 4, "hi": 4},
+  {"task": "T7", "quantity": "lfsr_likeness: LFSR stream / SipHash stream (2000 hops)", "expected": "1.00 / 0.31 (= 4/13)", "lo": 0.27, "hi": 0.35}
+ ]}
