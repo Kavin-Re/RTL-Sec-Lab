@@ -1,5 +1,9 @@
 # RTL-Sec-Lab
 
+> **Status: frozen, 2026-11-23.** No new labs are planned. **Not done:** the kit has never been run with
+> students, and no one has yet worked through it from the starters alone; the lab timings are a plan, not a
+> record. Running it once with a small group is the step that would show where the handouts fail.
+
 **A three-hour, six-lab workshop kit on the hardware security of a small keyed frequency-hop engine: breaking weak generators, power analysis, masking, fault injection, trojans and PUFs. Every lab has a starter, a reference solution and a deterministic auto-grader.**
 
 [![CI](https://github.com/Kavin-Re/RTL-Sec-Lab/actions/workflows/ci.yml/badge.svg)](https://github.com/Kavin-Re/RTL-Sec-Lab/actions/workflows/ci.yml)
@@ -11,6 +15,12 @@
 > trace, no radio and no real exploit. Leakage, fault, trojan and PUF behaviour come from simple
 > assumed models, and each handout says so. The Verilog in `rtl/` is for reading; the kit does not
 > simulate it.
+>
+> **Labs 3 and 4 use uniformly random messages.** The real engine hashes a slot counter that counts up. With
+> consecutive counter values, the reference attack of Lab 3 recovers only 1 of 8 key bytes of each key half
+> at 300 traces (2 of 8 at 70,000), against 8 of 8 with random messages. The labs teach the method; they are
+> not an end-to-end break of a counter-mode engine. Details: [Limitations](#limitations) and
+> [`docs/known_issues.md`](docs/known_issues.md).
 
 > **This repository contains the solutions.** It is the facilitator's copy. Give students the
 > export described under [Running a workshop](#running-a-workshop).
@@ -59,7 +69,9 @@ python -m rtlseclab.check --starters     # ...and confirm every starter fails cl
 python labs/lab3_power_cpa/grader.py labs/lab3_power_cpa/solution.py
 ```
 
-Expected last line of the check: `KIT CHECK: 39/39 solution tasks PASS across 6 labs`.
+Expected last line of the check: `KIT CHECK: 39/39 solution tasks PASS across 6 labs`. That count says the
+reference solutions pass their own graders, both written by the same author. It is a consistency check of the
+kit, not evidence that the labs teach well or that the models match real hardware.
 
 A grader run looks like this:
 
@@ -147,5 +159,6 @@ turns the attacks of labs 1 and 2 into a scoring benchmark.
 
 ## License
 
-No license file has been added yet, so default copyright applies. A workshop kit is only useful if
-others may reuse it, so adding a license is the first item on the to-do list. Until then, please ask.
+Copyright 2026 Kavin K K. Licensed under the [Apache License, Version 2.0](LICENSE); see also [NOTICE](NOTICE).
+
+The hop-engine models in `rtlseclab/core/` are copied from the author's FHSS-Link repository (each file names its source), which is under the same licence.
